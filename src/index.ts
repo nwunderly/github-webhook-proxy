@@ -1,31 +1,55 @@
-import config from "./config.json";
+import {
+  webhook as url,
+  token as configToken,
+  includeRepos as include,
+  excludeRepos as exclude
+} from "./config";
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleRequest(event.request))
 })
 
-const url: String = config.webhook_url;
-const include: Array<String> = config.includeRepos;
-const exclude: Array<String> = config.excludeRepos;
+class GithubPacket {
+  repository: {name: string}
+
+  constructor(repository: {name: string}) {
+    this.repository = repository;
+  }
+}
 
 async function handleRequest(request: Request): Promise<Response> {
-  request.url = url;
+  const { searchParams } = new URL(request.url);
+
+  const reqToken = searchParams.get("token")
+  if (reqToken !== configToken) {
+    return new Response("Invalid token", {status: 401});
+  }
 
   let data = await request.json();
-  let repo: String = data["repository"]["name"];
+  let packet = data as GithubPacket;
+  const repo: string = packet.repository.name;
 
-  let send: boolean = false;
+  let reqUrl = `${url}/${reqToken}/github`;
+  let reqHeaders = new Headers(request.headers);
+  reqHeaders.delete("host");
+  let req = new Request(reqUrl, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: reqHeaders,
+  });
+  // request.url = 
 
-  if (include != []) {
+  let send: boolean = true;
+
+  if (include.length !== 0) {
     send = include.includes(repo);
-  } else if (exclude != []) {
+  } else if (exclude.length !== 0) {
     send = !exclude.includes(repo);
   }
 
   if (send) {
-    return await fetch(request);
-    
+    return await fetch(req);
   } else {
-    return new Response("ignored repository", {code: 418});
+    return new Response("ignored repository", {status: 418});
   }
 }
