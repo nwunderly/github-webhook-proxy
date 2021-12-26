@@ -1,11 +1,10 @@
-name = "worker-typescript-template"
+name = "github-webhook-proxy"
 type = "javascript"
-zone_id = ""
 account_id = ""
-route = ""
+zone_id = ""
 workers_dev = true
 
 [build]
-command = "npm install && npm run build"
+command = "npm install && npm run build --resolveJsonModule"
 [build.upload]
 format = "service-worker"
