@@ -1,16 +1,16 @@
 {
-  "name": "worker-typescript-template",
+  "name": "github-webhook-proxy",
   "version": "1.0.0",
-  "description": "Cloudflare worker TypeScript template",
+  "description": "A simple Cloudflare worker for proxying and filtering GitHub webhooks.",
   "main": "dist/worker.js",
+  "author": "nwunderly",
+  "license": "MIT",
   "scripts": {
     "build": "webpack",
     "format": "prettier --write  '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
     "lint": "eslint --max-warnings=0 src && prettier --check '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
     "test": "jest --config jestconfig.json --verbose"
   },
-  "author": "author",
-  "license": "MIT OR Apache-2.0",
   "eslintConfig": {
     "root": true,
     "extends": [
